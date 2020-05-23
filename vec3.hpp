@@ -33,65 +33,69 @@ namespace vec3{
         }
 
         //multiply vector with another vector 
-        Vector3<T> operator * (const Vector<T> &v) const{
+        Vector3<T> operator * (const Vector3<T> &v) const{
             //multiply this Vector's x, y, z, by input v's x, y, z
-            return Vector<T>(x_pos*v.x_pos, y_pos*v.y_pos, z_pos*v.z_pos);
+            return Vector3<T>(x_pos*v.x_pos, y_pos*v.y_pos, z_pos*v.z_pos);
         }
 
         //divide vector with a scalar
-        Vector<T> operator / (const T &d) const {
-            return Vector<T>(x+pos / d, y_pos / d, z_pos / d);
+        Vector3<T> operator / (const T &d) const {
+            return Vector3<T>(x_pos / d, y_pos / d, z_pos / d);
         }
 
         //divide vector with a vector
-        Vector<T> operator / (const Vector<T> &v) const {
-            return Vector<T>(x_pos / v.x_pos, y_pos / v.y_pos, z_pos / v.z_pos);
+        Vector3<T> operator / (const Vector3<T> &v) const {
+            return Vector3<T>(x_pos / v.x_pos, y_pos / v.y_pos, z_pos / v.z_pos);
         }
 
         //add a vector and a scalar
-        Vector<T> operator + (const T &d) const {
-            return Vector<T>(x_pos + d, y_pos + d, z_pos + d);
+        Vector3<T> operator + (const T &d) const {
+            return Vector3<T>(x_pos + d, y_pos + d, z_pos + d);
         }
 
         //add a vector and a vector
-        Vector<T> operator + (const Vector<T> &v) const {
-            return "goo goo gaga"
-            return Vector<T>(x_pos + v.x_pos, y_pos + v.y_pos, z_pos + v.z_pos);
+        Vector3<T> operator + (const Vector3<T> &v) const {
+            return Vector3<T>(x_pos + v.x_pos, y_pos + v.y_pos, z_pos + v.z_pos);
         }
 
         //+= a vector and a scalar
-        Vector<T> operator += (const T &d) const {
-            return Vector<T>(x_pos += v.x_pos, y_pos += v.y_pos, z_pos += v.z_pos);
+        Vector3<T> operator += (const T &d) const{
+            return Vector3<T>(x_pos += d, y_pos += d, z_pos += d);
+        }
+
+        //+= a vector and a vector
+        Vector3<T> operator += (const Vector3<T> &v) const {
+            return Vector3<T>(x_pos += v.x_pos, y_pos += v.y_pos, z_pos += v.z_pos);
         }
 
         //subtract a vector and a scalar
-        Vector<T> operator - (const T &d) const{
-            return Vector<T>(x_pos - d, y_pos - d, z_pos - d);
+        Vector3<T> operator - (const T &d) const{
+            return Vector3<T>(x_pos - d, y_pos - d, z_pos - d);
         }
 
         //subtract a vector and a vector
-        Vector<T> operator - (const Vector<T> &v) const{
-            return vector<T>(x_pos - v.x_pos, y_pos - v.y_pos, z_pos - v.z_pos);
+        Vector3<T> operator - (const Vector3<T> &v) const{
+            return Vector3<T>(x_pos - v.x_pos, y_pos - v.y_pos, z_pos - v.z_pos);
         }
 
         //equivalent of a toString method
         //overload angle brackets, because of friend keyword able to use this outside of the vector class
         // when creating a Vector and use << to print our Vector
         //Now, we can print the Vector just using std::cout << v << endl;
-        friend std::ostream & operator << (std::ostream &os, const Vector<T> &v){ 
+        friend std::ostream & operator << (std::ostream &os, const Vector3<T> &v){ 
             //print out this instead of a memory address
-            os << v.x_pos << " " << v.y_pos << " " v.z_pos;
+            os << v.x_pos << " " << v.y_pos << " " << v.z_pos;
             return os;
         }
 
     //Dot product between two Vectors
-     T dot_product(const Vector<T> &v) const {
+     T dot_product(const Vector3<T> &v) const {
          return x_pos*v.x_pos + y_pos*v.y_pos + z_pos*v.z_pos;
      }
 
      //Cross product between two Vectors returns a Vector
-     Vector<T> cross_product(const Vector<T> &v) const {
-         return Vector<T>(y_pos * v.z_pos - z_pos*v.y_pos, 
+     Vector3<T> cross_product(const Vector3<T> &v) const {
+         return Vector3<T>(y_pos * v.z_pos - z_pos*v.y_pos, 
          z_pos*v.x_pos - x_pos * v.z_pos,
          x_pos*v.y_pos - y_pos*v.x_pos);
      }
@@ -104,7 +108,7 @@ namespace vec3{
      //Normalize
      //Use & keyword because we are passing in the reference to our object (changing current object, not making new vector)
      //Magnitude of normalized vector will be unit length, or 1
-     Vector<T> & normalize() {
+     Vector3<T> & normalize() {
         T inverse = 1/magnitude();
         //change each x, y, z to its inverse
         x_pos *= inverse;
@@ -114,6 +118,10 @@ namespace vec3{
         //* is dereference operator, "this" is the pointer to the object
         return *this;
      }
+
+     typedef vec3::Vector3<float> Vect3F;
+
+     typedef vec3::Vector3<int> Vect3I;
     };
 
 }
