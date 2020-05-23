@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace vec3{
+namespace raytrace{
 
     template<typename T>
     class Vector3{
@@ -27,7 +27,7 @@ namespace vec3{
 
         //Vector Operators 
         //overload these operators
-        //multiply vector with a scalar, when multiplying put scalar on right hand side
+        //multiply vector with a scalar, scalar must be on right hand side
         Vector3<T> operator * (const T &d) const {
             return Vector3<T>(x_pos*d, y_pos*d, z_pos*d);
         }
@@ -118,13 +118,11 @@ namespace vec3{
         //* is dereference operator, "this" is the pointer to the object
         return *this;
      }
-
-     typedef vec3::Vector3<float> Vect3F;
-
-     typedef vec3::Vector3<int> Vect3I;
     };
-
 }
+
+typedef raytrace::Vector3<float> Vect3F;
+typedef raytrace::Vector3<int> Vect3I;
 
 #endif /* VEC3_HPP_ */
 
