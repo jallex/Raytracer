@@ -34,6 +34,7 @@ namespace vec3{
 
         //multiply vector with another vector 
         Vector3<T> operator * (const Vector<T> &v) const{
+            //multiply this Vector's x, y, z, by input v's x, y, z
             return Vector<T>(x_pos*v.x_pos, y_pos*v.y_pos, z_pos*v.z_pos);
         }
 
@@ -77,12 +78,23 @@ namespace vec3{
         //overload angle brackets, because of friend keyword able to use this outside of the vector class
         // when creating a Vector and use << to print our Vector
         //Now, we can print the Vector just using std::cout << v << endl;
-        friend std::ostream & operator << (std::ostream &os, const Vector<T> &v){
+        friend std::ostream & operator << (std::ostream &os, const Vector<T> &v){ 
             //print out this instead of a memory address
             os << v.x_pos << " " << v.y_pos << " " v.z_pos;
             return os;
         }
 
+    //Dot product between two Vectors
+     T dot_product(const Vector<T> &v) const{
+         return x_pos*v.x_pos + y_pos*v.y_pos + z_pos*v.z_pos;
+     }
+
+     //Cross product between two Vectors returns a Vector
+     Vector<T> cross_product(const Vector<T> &v) const {
+         return Vector<T>(y_pos * v.z_pos - z_pos*v.y_pos, 
+         z_pos*v.x_pos - x_pos * v.z_pos,
+         x_pos*v.y_pos - y_pos*v.x_pos);
+     }
 
     };
 
