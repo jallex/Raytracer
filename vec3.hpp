@@ -85,7 +85,7 @@ namespace vec3{
         }
 
     //Dot product between two Vectors
-     T dot_product(const Vector<T> &v) const{
+     T dot_product(const Vector<T> &v) const {
          return x_pos*v.x_pos + y_pos*v.y_pos + z_pos*v.z_pos;
      }
 
@@ -96,6 +96,24 @@ namespace vec3{
          x_pos*v.y_pos - y_pos*v.x_pos);
      }
 
+     //Magnitude
+     T magnitude() const {
+         return sqrt(pow(x_pos,2) + pow(y_pos,2) + pow(z_pos,2));
+     }
+
+     //Normalize
+     //Use & keyword because we are passing in the reference to our object (changing current object, not making new vector)
+     //Magnitude of normalized vector will be unit length, or 1
+     Vector<T> & normalize() {
+        T inverse = 1/magnitude();
+        //change each x, y, z to its inverse
+        x_pos *= inverse;
+        y_pos *= inverse;
+        z_pos *= inverse;
+        //return pointer to vector object
+        //* is dereference operator, "this" is the pointer to the object
+        return *this;
+     }
     };
 
 }
