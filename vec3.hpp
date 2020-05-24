@@ -17,6 +17,7 @@ namespace raytrace{
     private:
         T x_pos, y_pos, z_pos;
     public:
+        Vector3() {}
         Vector3(T n):
             x_pos(n), y_pos(n), z_pos(n){}
         Vector3(T x, T y, T z):
