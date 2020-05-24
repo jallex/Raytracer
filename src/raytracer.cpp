@@ -1,5 +1,5 @@
 #include <iostream>
-#include "vec3.hpp"
+#include "./vec3.hpp"
 
 int main(int argc, char** args) {
 

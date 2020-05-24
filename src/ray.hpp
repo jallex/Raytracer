@@ -1,6 +1,6 @@
 #ifndef RAY_HPP_
 #define RAY_HPP_
-#include "vec3.hpp"
+#include "./vec3.hpp"
 
 template <typename T>
 class ray {
