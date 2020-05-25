@@ -3,7 +3,25 @@
 #include "./ray.hpp"
 using namespace std;
 
+//Does the ray intersect with a sphere at tghe given center and radius?ßß
+bool did_hit_sphere(const Vector3 center, float radius, const RayF& ray) {
+    // return quadratic equation dot(B, B)*t^2 + 2*dot(B, A-C)*t + dot(A-C, A-C) - R*R = 0
+    // where discriminant is b^2 - 4ac from form at^2 + bt + c = 0 
+    Vector3 A = ray.origin();
+    Vector3 B = ray.direction();
+    Vector3 C = center;
+    float a = B.dot_product(B);
+    float b = (A - C).dot_product(B) * 2.0;
+    float c = (A-C).dot_product(A-C) - radius * radius;
+    float discriminant = b * b - 4 * a * c;
+    // discriminant d < 0 means no real roots, d = 0 means 1 real root, d > 0 means 2 real roots.
+    return (0 < discriminant);
+}
+
 Vector3 color(const RayF r) {
+    if(did_hit_sphere(Vector3(0, 0, -1), 0.5, r)){
+        return Vector3(1, 0, 0);
+    }
     Vector3 unit_direction = unit_vector(r.direction());
     float t = 0.5*(unit_direction.get_y() + 1.0);
     //linear interpolation form: blended_value = (1-t)*start_value + t*end_value where 0 <= t <= 1
