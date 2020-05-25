@@ -19,7 +19,7 @@ float did_hit_sphere(const Vector3 center, float radius, const RayF& ray) {
         return -1.0; //did not hit sphere
     }
     else {
-        //find roots of the quadratic formula are found with quadratic equation that represents hit points
+        //roots of the quadratic formula are found with quadratic equation that represents hit points
         //quadratic equation is: (-b+-√b^2-4ac) / 2a
         //Let’s assume the closest hit point (smallest t), so we only subtract the discriminant
         return (-b - sqrt(discriminant)) / (2.0*a);
@@ -32,7 +32,7 @@ Vector3 color(const RayF r) {
     float t = (did_hit_sphere(sphere_center, sphere_radius, r));
     if (t > 0.0) {
         //make the normal unit length vector– so each component is between -1 and 1
-        //map each component to the interval from 0 to 1, and then map x/y/z to b
+        //map each component to the interval from 0 to 1, and then map x/y/z to r/g/b
         Vector3 surface_normal = unit_vector(r.point_at_parameter(t) - sphere_center);
         return Vector3(surface_normal.get_x() + 1, surface_normal.get_y() + 1, surface_normal.get_z() + 1) * 0.5;
     }
@@ -45,20 +45,20 @@ Vector3 color(const RayF r) {
 int main(int argc, char** args) {
     ofstream MyFile("my_image.ppm");
     //new
-    int nx = 200;
-    int ny = 100;
+    int width = 200;
+    int height = 100;
 
-    std::cout <<"P3\n" << nx << " " << ny << "\n255\n";
-     MyFile <<"P3\n" << nx << " " << ny << "\n255\n";
+    std::cout <<"P3\n" << width << " " << height << "\n255\n";
+     MyFile <<"P3\n" << width << " " << height << "\n255\n";
     Vector3 lower_left_corner(-2.0, -1.0, -1.0);
     Vector3 horizontal(4.0, 0.0, 0.0);
     Vector3 vertical(0.0, 2.0, 0.0);
     Vector3 origin(0.0, 0.0, 0.0);
-    for (int j = ny - 1; j >= 0; j--){
-        for(int i = 0; i < nx; i++){
-            float width = float(i) / float(nx);
-            float height = float(j) / float(ny);
-            RayF r(origin, (lower_left_corner + horizontal*width + vertical*height));
+    for (int j = height - 1; j >= 0; j--){
+        for(int i = 0; i < width; i++){
+            float x_pos = float(i) / float(width);
+            float y_pos = float(j) / float(height);
+            RayF r(origin, (lower_left_corner + horizontal*x_pos + vertical*y_pos));
             
             Vector3 col = color(r);
             int ir = int(255.99*col.get_x());
