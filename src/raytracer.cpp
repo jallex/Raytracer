@@ -1,5 +1,7 @@
 #include <iostream>
+#include <fstream>
 #include "./ray.hpp"
+using namespace std;
 
 Vector3 color(const RayF r) {
     Vector3 unit_direction = unit_vector(r.direction());
@@ -9,11 +11,13 @@ Vector3 color(const RayF r) {
 }
 
 int main(int argc, char** args) {
+    ofstream MyFile("my_image.ppm");
     //new
     int nx = 200;
     int ny = 100;
 
     std::cout <<"P3\n" << nx << " " << ny << "\n255\n";
+     MyFile <<"P3\n" << nx << " " << ny << "\n255\n";
     Vector3 lower_left_corner(-2.0, -1.0, -1.0);
     Vector3 horizontal(4.0, 0.0, 0.0);
     Vector3 vertical(0.0, 2.0, 0.0);
@@ -30,6 +34,8 @@ int main(int argc, char** args) {
             int ib = int(255.99*col.get_z());
 
             std::cout << ir << " " << ig << " " << ib << "\n";
+            MyFile << ir << " " << ig << " " << ib << "\n";
         }
     }
+     MyFile.close();
 }
