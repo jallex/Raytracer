@@ -31,6 +31,4 @@ Vector3 Direction_Ray;
 
 };
 
-typedef Ray RayF;
-
 #endif /* RAY_HPP_ */
