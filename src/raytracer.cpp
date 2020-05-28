@@ -3,8 +3,8 @@
 #include "./ray.hpp"
 using namespace std;
 
-//Does the ray intersect with a sphere at tghe given center and radius?
-float did_hit_sphere(const Vector3 center, float radius, const RayF& ray) {
+//returns where the ray hit the sphere
+float hit_sphere_at(const Vector3 center, float radius, const RayF& ray) {
     // return quadratic equation dot(B, B)*t^2 + 2*dot(B, A-C)*t + dot(A-C, A-C) - Radius*Radius = 0
     // where discriminant is b^2 - 4ac from form at^2 + bt + c = 0 
     Vector3 A = ray.origin();
@@ -29,7 +29,7 @@ float did_hit_sphere(const Vector3 center, float radius, const RayF& ray) {
 Vector3 color(const RayF r) {
     Vector3 sphere_center = Vector3(0, 0, -1);
     float sphere_radius = 0.3;
-    float t = (did_hit_sphere(sphere_center, sphere_radius, r));
+    float t = (hit_sphere_at(sphere_center, sphere_radius, r));
     if (t > 0.0) {
         //make the normal unit length vector– so each component is between -1 and 1
         //map each component to the interval from 0 to 1, and then map x/y/z to r/g/b

@@ -20,6 +20,8 @@ class Ray {
             return Direction_Ray;
         }
 
+        //p(t) = A + t*B function that represents a Ray mathematically
+        //Changing t gives you different points along the Ray
         Vector3 point_at_parameter(float t) const {
             return Origin_Ray + Direction_Ray*t;
         }
