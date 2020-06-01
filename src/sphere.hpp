@@ -31,7 +31,19 @@ bool Sphere::hit(const Ray& ray, float tmin, float tmax, hit_record& rec) const 
         if (root < tmax && root > tmin) {
             rec.t = root;
             rec.p = ray.point_at_parameter(rec.t);
+            //Add surface side determination 
             rec.normal = (rec.p - center) / radius;
+            rec.set_face_normal(ray, rec.normal);
+            return true;
+        }
+        //the second root based on quadratic equation
+        root = (-b + sqrt(discriminant)) / (2.0*a);
+        if (root < tmax && root > tmin) {
+            rec.t = root;
+            rec.p = ray.point_at_parameter(rec.t);
+            //Add surface side determination 
+            rec.normal = (rec.p - center) / radius;
+            rec.set_face_normal(ray, rec.normal);
             return true;
         }
     }
