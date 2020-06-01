@@ -2,7 +2,9 @@
 #include <fstream>
 #include "./rt_common.hpp"
 #include "./sphere.hpp"
-#include "./LoGeometry.hpp"
+#include "./logeometry.hpp"
+#include "./camera.hpp"
+#include "./color.hpp"
 using namespace std;
 
 Vector3 color(const Ray& r, const Geometry& scene) {
@@ -29,6 +31,7 @@ int main() {
     int width = 384;
     //image height
     int height = static_cast<int>(width / aspect_ratio);
+    const int samples_per_pixel = 100;
 
     std::cout <<"P3\n" << width << " " << height << "\n255\n";
      MyFile <<"P3\n" << width << " " << height << "\n255\n";
@@ -49,22 +52,25 @@ int main() {
     scene.add(make_shared<Sphere>(Vector3(0,0,-1), 0.5));
     scene.add(make_shared<Sphere>(Vector3(0,-100.5,-1), 100));
 
+    //Add camera to scene
+    Camera cam;
+
     for (int j = height - 1; j >= 0; j--){
          std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
         for(int i = 0; i < width; i++){
-            auto u = float(i) / (width-1);
-            auto v = float(j) / (height-1);
-            Ray r(origin, (lower_left_corner + horizontal*u + vertical*v - origin));
-            Vector3 p = r.point_at_parameter(2.0);
-            Vector3 col = color(r, scene);
-            
-            int ir = int(255.99*col.get_x());
-            int ig = int(255.99*col.get_y());
-            int ib = int(255.99*col.get_z());
-
-            std::cout << ir << " " << ig << " " << ib << "\n";
-            MyFile << ir << " " << ig << " " << ib << "\n";
+            //color of this pixel
+            Vector3 col(0,0,0);
+            for(int s = 0; s < samples_per_pixel; s++) {
+                //antialiasing, blur edges by generating pixels w multiple samples
+                auto u = (i + random_num()) / (width - 1);
+                auto v = (j + random_num()) / (height - 1);
+                Ray r = cam.get_ray(u, v);
+                col += color(r, scene);
+            }
+            //print colors and write to ppm file
+            write_color(std::cout, MyFile, col, samples_per_pixel);
         }
     }
      MyFile.close();
+     std::cerr << "\nFinished!\n";
 }
