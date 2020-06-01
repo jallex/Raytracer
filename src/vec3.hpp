@@ -108,6 +108,54 @@ namespace raytrace{
             //* is dereference operator, "this" is the pointer to the object
             return *this;
         }
+
+        //*= a vector and a vector
+        Vector3 & operator *= (const Vector3 &v) {
+            x_pos *= v.x_pos;
+            y_pos *= v.y_pos;
+            z_pos *= v.z_pos;
+            return *this;
+        }
+
+        //*= a vector and a float
+        Vector3 & operator *= (const float &d) {
+            x_pos *= d;
+            y_pos *= d;
+            z_pos *= d;
+            return *this;
+        }
+
+        //+= a vector and a vector
+        Vector3 & operator += (const Vector3 &v) {
+            x_pos += v.x_pos;
+            y_pos += v.y_pos;
+            z_pos += v.z_pos;
+            return *this;
+        }
+
+        // /= a vector and a vector
+        Vector3 & operator /= (const Vector3 &v) {
+            x_pos /= v.x_pos;
+            y_pos /= v.y_pos;
+            z_pos /= v.z_pos;
+            return *this;
+        }
+
+        // /= a vector and a float
+        Vector3 & operator /= (const float &d) {
+            x_pos /= d;
+            y_pos /= d;
+            z_pos /= d;
+            return *this;
+        }
+
+        // -= a vector and a vector
+        Vector3 & operator -= (const Vector3 &v) {
+            x_pos -= v.x_pos;
+            y_pos -= v.y_pos;
+            z_pos -= v.z_pos;
+            return *this;
+        }
     };
 }
 
