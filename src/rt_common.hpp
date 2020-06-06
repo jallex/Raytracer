@@ -29,7 +29,7 @@ inline float random_num() {
 
 //return a random number min <= x < max
 inline float random_num(float min, float max) {
-    return random()*(max-min) + min;
+    return random_num()*(max-min) + min;
 }
 
 //restrict color to the range [min, max]

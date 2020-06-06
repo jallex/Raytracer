@@ -9,6 +9,7 @@
 #include <sstream>
 #include <algorithm>
 #include <vector>
+#include "./rt_common.hpp"
 
 namespace raytrace{
 
@@ -24,6 +25,10 @@ namespace raytrace{
         float get_x() const { return x_pos; }
         float get_y() const { return y_pos; }
         float get_z() const { return z_pos; }
+
+        float vec_length_squared() const {
+            return x_pos*x_pos + y_pos*y_pos + z_pos*z_pos;
+        }
 
         //Vector Operators 
         //overload these operators
@@ -161,9 +166,48 @@ namespace raytrace{
 
 typedef raytrace::Vector3 Vector3;
 
+inline static Vector3 random_vec(){
+    return Vector3(random_num(), random_num(), random_num());
+}
+
+inline static Vector3 random_vec(float min, float max){
+    return Vector3(random_num(min, max), random_num(min, max), random_num(min, max));
+}
+
+//Diffuse  method 1
+Vector3 random_in_unit_sphere() {
+    while (true) {
+        auto p = random_vec(-1,1);
+        if (p.vec_length_squared() >= 1) continue;
+        return p;
+    }
+}
+
+//Diffuse method 2
+//generate a random unit vector with lambertian distribution 
+inline Vector3 random_unit_vec() {
+    //random num between 0 and diameter
+    auto a = random_num(0, 2*pi);
+    //random between -1 to 1
+    auto z = random_num(-1, 1);
+    auto r = sqrt(1-z*z);
+    return Vector3(r*cos(a), r*sin(a), z);
+}
+
 inline Vector3 unit_vector(const Vector3 &v) {
     return v / v.magnitude();
 }
+
+//Diffuse method 3
+Vector3 random_in_hemisphere(const Vector3& normal) {
+    Vector3 in_unit_sphere = random_in_unit_sphere();
+    if (in_unit_sphere.dot_product(normal) > 0.0) // In the same hemisphere as the normal
+        return in_unit_sphere;
+    else
+        return in_unit_sphere*(-1);
+}
+
+
 
 #endif /* VEC3_HPP_ */
 

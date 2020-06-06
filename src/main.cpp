@@ -5,16 +5,27 @@
 #include "./logeometry.hpp"
 #include "./camera.hpp"
 #include "./color.hpp"
+#include "./vec3.hpp"
 using namespace std;
 
-Vector3 color(const Ray& r, const Geometry& scene) {
+Vector3 color(const Ray& r, const Geometry& scene, int depth) {
     hit_record rec;
-    if(scene.hit(r, 0.0, MAXFLOAT, rec)) {
+    if(depth <= 0) { 
+        //no light
+        return Vector3(0, 0, 0);
+    }
+    if(scene.hit(r, 0.001, MAXFLOAT, rec)) {
         //calculate object color
-        return ((rec.normal + Vector3(1, 1, 1)) * 0.5);
+        //diffuse method 1
+        // Vector3 target = rec.p + rec.normal + random_in_unit_sphere();
+        //diffuse method 2
+        Vector3 target = rec.p + rec.normal + random_unit_vec(); //Lambertian distribution
+        //diffuse method 3
+        //Vector3 target = rec.p + random_in_hemisphere(rec.normal);
+        return color(Ray(rec.p, target - rec.p), scene, depth-1)*0.5;
     }
     else {
-        //calculate background color
+        //calculate background color 
         Vector3 unit_direction = unit_vector(r.direction());
         auto t = 0.5*(unit_direction.get_y() + 1.0);
         //When t=1.0 return blue. When t=0.0 return white depending on ray Y coordinate
@@ -32,6 +43,7 @@ int main() {
     //image height
     int height = static_cast<int>(width / aspect_ratio);
     const int samples_per_pixel = 100;
+    const int max_depth = 50;
 
     std::cout <<"P3\n" << width << " " << height << "\n255\n";
      MyFile <<"P3\n" << width << " " << height << "\n255\n";
@@ -65,7 +77,7 @@ int main() {
                 auto u = (i + random_num()) / (width - 1);
                 auto v = (j + random_num()) / (height - 1);
                 Ray r = cam.get_ray(u, v);
-                col += color(r, scene);
+                col += color(r, scene, max_depth);
             }
             //print colors and write to ppm file
             write_color(std::cout, MyFile, col, samples_per_pixel);
