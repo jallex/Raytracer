@@ -5,10 +5,11 @@
 class Sphere: public Geometry {
     public:
     Sphere(){}
-    Sphere(Vector3 c, float r) : center(c), radius(r) {};
+    Sphere(Vector3 c, float r, shared_ptr<Material> m) : center(c), radius(r), mat_ptr(m){};
     virtual bool hit(const Ray& ray, float tmin, float tmax, hit_record& rec) const;
     Vector3 center;
     float radius;
+    shared_ptr<Material> mat_ptr;
 };
 
 bool Sphere::hit(const Ray& ray, float tmin, float tmax, hit_record& rec) const {
@@ -34,6 +35,8 @@ bool Sphere::hit(const Ray& ray, float tmin, float tmax, hit_record& rec) const 
             //Add surface side determination 
             rec.normal = (rec.p - center) / radius;
             rec.set_face_normal(ray, rec.normal);
+            //record material of this sphere
+            rec.mat_ptr = mat_ptr;
             return true;
         }
         //the second root based on quadratic equation
@@ -44,6 +47,8 @@ bool Sphere::hit(const Ray& ray, float tmin, float tmax, hit_record& rec) const 
             //Add surface side determination 
             rec.normal = (rec.p - center) / radius;
             rec.set_face_normal(ray, rec.normal);
+            //record material of this sphere
+            rec.mat_ptr = mat_ptr;
             return true;
         }
     }

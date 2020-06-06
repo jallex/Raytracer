@@ -2,10 +2,12 @@
 #include <fstream>
 #include "./rt_common.hpp"
 #include "./sphere.hpp"
+#include "./geometry.hpp"
 #include "./logeometry.hpp"
 #include "./camera.hpp"
 #include "./color.hpp"
 #include "./vec3.hpp"
+#include "./material.hpp"
 using namespace std;
 
 Vector3 color(const Ray& r, const Geometry& scene, int depth) {
@@ -15,14 +17,12 @@ Vector3 color(const Ray& r, const Geometry& scene, int depth) {
         return Vector3(0, 0, 0);
     }
     if(scene.hit(r, 0.001, MAXFLOAT, rec)) {
-        //calculate object color
-        //diffuse method 1
-        // Vector3 target = rec.p + rec.normal + random_in_unit_sphere();
-        //diffuse method 2
-        Vector3 target = rec.p + rec.normal + random_unit_vec(); //Lambertian distribution
-        //diffuse method 3
-        //Vector3 target = rec.p + random_in_hemisphere(rec.normal);
-        return color(Ray(rec.p, target - rec.p), scene, depth-1)*0.5;
+        Ray scattered;
+        Vector3 attenuation;
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)){
+            return attenuation * color(scattered, scene, depth-1);
+        }
+        return Vector3(0, 0, 0); //no light
     }
     else {
         //calculate background color 
@@ -61,8 +61,15 @@ int main() {
     
     //Create geometry
     LoGeometry scene;
-    scene.add(make_shared<Sphere>(Vector3(0,0,-1), 0.5));
-    scene.add(make_shared<Sphere>(Vector3(0,-100.5,-1), 100));
+    scene.add(make_shared<Sphere>(Vector3(0,0,-1), 0.5,
+    make_shared<Lambertian>(Vector3(0.7, 0.3, 0.3))));
+    scene.add(make_shared<Sphere>(Vector3(0,-100.5,-1), 100,
+    make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
+
+    scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, 
+    make_shared<Metal>(Vector3(.8,.6,.2))));
+    scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, 
+    make_shared<Metal>(Vector3(.8,.8,.8))));
 
     //Add camera to scene
     Camera cam;

@@ -2,6 +2,9 @@
 #define GEOMETRY_HPP_
 #include "./ray.hpp"
 
+class Material; //alert compiler that pointer is to a class
+
+//contains necessary arguments and info
 struct hit_record {
     //t of the hit 
     float t;
@@ -9,6 +12,8 @@ struct hit_record {
     Vector3 p;
     //normal
     Vector3 normal;
+    //Materials
+    shared_ptr<Material> mat_ptr;
 
     bool front_face;
 

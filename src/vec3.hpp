@@ -207,6 +207,15 @@ Vector3 random_in_hemisphere(const Vector3& normal) {
         return in_unit_sphere*(-1);
 }
 
+//Reflected ray = v + 2b
+Vector3 reflect(const Vector3& v, const Vector3& normal) {
+    //length of b is the dot product of v and n
+    float length_b = v.dot_product(normal);
+    //subtract bc v points in
+    return v - normal*length_b*2.0;
+}
+
+
 
 
 #endif /* VEC3_HPP_ */
