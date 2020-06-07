@@ -174,6 +174,8 @@ inline static Vector3 random_vec(float min, float max){
     return Vector3(random_num(min, max), random_num(min, max), random_num(min, max));
 }
 
+//Material functions to calculate how rays interact with different materials
+
 //Diffuse  method 1
 Vector3 random_in_unit_sphere() {
     while (true) {
@@ -215,8 +217,13 @@ Vector3 reflect(const Vector3& v, const Vector3& normal) {
     return v - normal*length_b*2.0;
 }
 
-
-
+//Refraction
+Vector3 refract(const Vector3& uv, const Vector3& normal, float etaI_over_etaT) {
+    auto cos_theta = (uv*(-1)).dot_product(normal);
+    Vector3 r_parallel = (uv + normal*cos_theta)*etaI_over_etaT;
+    Vector3 r_perp = normal*sqrt(1.0 - r_parallel.vec_length_squared())*(-1);
+    return r_parallel + r_perp;
+}
 
 #endif /* VEC3_HPP_ */
 

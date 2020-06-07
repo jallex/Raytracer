@@ -48,9 +48,34 @@ class Metal : public Material {
         attenuation = albedo;
         return scattered.direction().dot_product(rec.normal) > 0;
     }
-    public:
     Vector3 albedo;
     float fuzz;
+};
+
+//Dielectric (water, glass, diamonds...)
+class Dialectric : public Material {
+    public:
+    Dialectric(float ir) : index_of_refraction(ir){}
+
+    virtual bool scatter(const Ray& ray_in, const hit_record& rec, 
+    Vector3& attenuation, Ray& scattered) const {
+        attenuation = Vector3(1.0, 1.0, 1.0);
+        float etaI_over_etaT;
+        //if this is the outside face 
+        if(rec.front_face) {
+            etaI_over_etaT = 1.0 / index_of_refraction;
+        }
+        else {
+            etaI_over_etaT = index_of_refraction;
+        }
+
+        Vector3 unit_direction = unit_vector(ray_in.direction());
+        Vector3 refracted = refract(unit_direction, rec.normal, etaI_over_etaT);
+        scattered = Ray(rec.p, refracted);
+        return true;
+    }
+    //dimensionless number that describes how fast light travels through the material
+    float index_of_refraction;
 };
 
 #endif /* MATERIAL_HPP_*/

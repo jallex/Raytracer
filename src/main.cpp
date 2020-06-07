@@ -71,6 +71,9 @@ int main() {
     scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, 
     make_shared<Metal>(Vector3(.8,.8,.8), 0.8)));
 
+    scene.add(make_shared<Sphere>(Vector3(-2,0,-2), 0.5, 
+    make_shared<Dialectric>(0.8)));
+
     //Add camera to scene
     Camera cam;
 
