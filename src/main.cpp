@@ -67,9 +67,9 @@ int main() {
     make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
 
     scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, 
-    make_shared<Metal>(Vector3(.8,.6,.2))));
+    make_shared<Metal>(Vector3(.8,.6,.2), 0.3)));
     scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, 
-    make_shared<Metal>(Vector3(.8,.8,.8))));
+    make_shared<Metal>(Vector3(.8,.8,.8), 0.8)));
 
     //Add camera to scene
     Camera cam;

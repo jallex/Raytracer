@@ -1,6 +1,7 @@
 #ifndef MATERIAL_HPP_
 #define MATERIAL_HPP_
 
+
 #include "./geometry.hpp"
 
 
@@ -38,18 +39,18 @@ class Lambertian : public Material {
 //Metal
 class Metal : public Material {
     public:
-    Metal(const Vector3& a) : albedo(a) {}
+    Metal(const Vector3& a, float f) : albedo(a), fuzz(f < 1 ? f : 1) {}
     virtual bool scatter(const Ray& ray_in, const hit_record& rec, 
     Vector3& attenuation, Ray& scattered) const {
         //Light reflected
         Vector3 reflected = reflect(unit_vector(ray_in.direction()), rec.normal);
-        scattered = Ray(rec.p, reflected);
+        scattered = Ray(rec.p, random_in_unit_sphere()*fuzz + reflected);
         attenuation = albedo;
         return scattered.direction().dot_product(rec.normal) > 0;
     }
-
+    public:
     Vector3 albedo;
-
+    float fuzz;
 };
 
 #endif /* MATERIAL_HPP_*/
