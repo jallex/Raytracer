@@ -52,13 +52,23 @@ class Metal : public Material {
     float fuzz;
 };
 
+//Schlick's approximation for fresnel equations
+//F = F0 + (1-F0)*(1-(dot-product(n, v))^5
+//Where F0 is the reflectance at normal incidence, given by:
+//F0= (n-1)^2 / (n+1)^2
+float schlick(float cosine, float index_of_refraction){
+    auto f0 = (pow((1-index_of_refraction),2)) / (pow((1+index_of_refraction),2));
+    return f0 + (1-f0)*pow((1-cosine), 5);
+}
+
 //Dielectric (water, glass, diamonds...)
-class Dialectric : public Material {
+class Dielectric : public Material {
     public:
-    Dialectric(float ir) : index_of_refraction(ir){}
+    Dielectric(float ir) : index_of_refraction(ir){}
 
     virtual bool scatter(const Ray& ray_in, const hit_record& rec, 
     Vector3& attenuation, Ray& scattered) const {
+        //attenuation is always 1 because the glass absorbs nothing
         attenuation = Vector3(1.0, 1.0, 1.0);
         float etaI_over_etaT;
         //if this is the outside face 
@@ -70,10 +80,25 @@ class Dialectric : public Material {
         }
 
         Vector3 unit_direction = unit_vector(ray_in.direction());
+        float cos_theta = fmin((unit_direction*(-1)).dot_product(rec.normal), 1.0);
+        float sin_theta = sqrt(1.0-cos_theta*cos_theta);
+        if(etaI_over_etaT*sin_theta > 1.0) {
+            Vector3 reflected = reflect(unit_direction, rec.normal);
+            scattered = Ray(rec.p, reflected);
+            return true;
+        }
+        //calculate reflectivity varying with angle 
+        float reflect_prob = schlick(cos_theta, etaI_over_etaT);
+        if(random_num() < reflect_prob) {
+            Vector3 reflected = reflect(unit_direction, rec.normal);
+            scattered = Ray(rec.p, reflected);
+            return true;
+        }
         Vector3 refracted = refract(unit_direction, rec.normal, etaI_over_etaT);
         scattered = Ray(rec.p, refracted);
         return true;
     }
+
     //dimensionless number that describes how fast light travels through the material
     float index_of_refraction;
 };

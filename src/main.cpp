@@ -61,19 +61,17 @@ int main() {
     
     //Create geometry
     LoGeometry scene;
-    scene.add(make_shared<Sphere>(Vector3(0,0,-1), 0.5,
-    make_shared<Lambertian>(Vector3(0.7, 0.3, 0.3))));
-    scene.add(make_shared<Sphere>(Vector3(0,-100.5,-1), 100,
-    make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
+scene.add(make_shared<Sphere>(
+    Vector3(0,0,-1), 0.5, make_shared<Lambertian>(Vector3(0.1, 0.2, 0.5))));
 
-    scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, 
-    make_shared<Metal>(Vector3(.8,.6,.2), 0.3)));
-    scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, 
-    make_shared<Metal>(Vector3(.8,.8,.8), 0.8)));
+scene.add(make_shared<Sphere>(
+    Vector3(0,-100.5,-1), 100, make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
 
-    scene.add(make_shared<Sphere>(Vector3(-2,0,-2), 0.5, 
-    make_shared<Dialectric>(0.8)));
-
+scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, make_shared<Metal>(Vector3(.8, .6, .2), 0.0)));
+scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, make_shared<Dielectric>(1.5)));
+//creating a dielectric sphere with a negative radius makes surface normal point inwards,
+//creating a hollow glass sphere
+scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
     //Add camera to scene
     Camera cam;
 
