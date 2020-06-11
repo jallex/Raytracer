@@ -225,5 +225,15 @@ Vector3 refract(const Vector3& uv, const Vector3& normal, float etaI_over_etaT) 
     return r_parallel + r_perp;
 }
 
+//generate random scene rays originating from the lookfrom point
+//the larger the radius, the greater the defocus blur
+Vector3 random_from_unit_lookfrom(){
+    while(true) {
+        auto p = Vector3(random_num(-1, 1), random_num(-1, 1), 0);
+        if(p.vec_length_squared() >= 1) continue;
+        return p;
+    }
+}
+
 #endif /* VEC3_HPP_ */
 
