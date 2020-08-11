@@ -16,6 +16,7 @@ using std::sqrt;
 
 // Constants:
 const float pi = 3.1415926535897932385;
+const float infinity = std::numeric_limits<float>::infinity();
 
 // Utility Functions:
 inline float degrees_to_radians(float degrees) {

@@ -16,7 +16,7 @@ Vector3 color(const Ray& r, const Geometry& scene, int depth) {
         //no light
         return Vector3(0, 0, 0);
     }
-    if(scene.hit(r, 0.001, MAXFLOAT, rec)) {
+    if(scene.hit(r, 0.001, infinity, rec)) {
         Ray scattered;
         Vector3 attenuation;
         if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)){
@@ -85,30 +85,18 @@ int main() {
     //new
     const auto aspect_ratio = 16.0 / 9.0;
     //image width
-    int width = 384;
+    int width = 1200;
     //image height
     int height = static_cast<int>(width / aspect_ratio);
-    const int samples_per_pixel = 100;
+    const int samples_per_pixel = 10;
     const int max_depth = 50;
 
     std::cout <<"P3\n" << width << " " << height << "\n255\n";
      MyFile <<"P3\n" << width << " " << height << "\n255\n";
 
-    //viewport height
-    auto v_height = 2.0;
-    //viewport width
-    auto v_width = aspect_ratio * v_height;
-    auto focal_length = 1.0;
-
-    auto origin = Vector3(0, 0, 0);
-    auto horizontal = Vector3(v_width, 0, 0);
-    auto vertical = Vector3(0, v_height, 0);
-    auto lower_left_corner = origin - horizontal/2 - vertical/2 - Vector3(0, 0, focal_length);
-    
     //Create geometry
     LoGeometry scene;
 
-/**
     scene.add(make_shared<Sphere>(
         Vector3(0,0,-1), 0.5, make_shared<Lambertian>(Vector3(0.1, 0.2, 0.5))));
 
@@ -119,12 +107,22 @@ int main() {
     scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, make_shared<Dielectric>(1.5)));
     //creating a dielectric sphere with a negative radius makes surface normal point inwards,
     //creating a hollow glass sphere
-    scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
-**/
-    scene = random_scene();
+    // scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
+
+    //auto scene = random_scene();
 
 
     //Add camera to scene
+    Vector3 lookfrom(3,3,2);
+    Vector3 lookat(0,0,-1);
+    Vector3 vup(0,1,0);
+    auto dist_to_focus = 3;
+    auto aperture = 0.2;
+
+    Camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
+
+
+/**
     Vector3 lookfrom(13,2,3);
     Vector3 lookat(0,0,0);
     Vector3 vup(0,1,0);
@@ -132,6 +130,7 @@ int main() {
     auto aperture = 0.1;
 
     Camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
+**/
 
     for (int j = height - 1; j >= 0; j--){
          std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;

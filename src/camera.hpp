@@ -11,10 +11,11 @@ class Camera {
     float fov, //vertical field-of-view in degrees
     float aspect_ratio,
     float aperture, 
-    float focus_dist) {
+    float focus_dist   //Thin lens approxiation for depth of field 
+    ) {
         //Camera intrinsics
         auto theta = degrees_to_radians(fov);
-        auto h = tan(theta/2);
+        auto h = tan(theta/2.0f);
 
         //viewport height
         auto v_height = 2.0 * h;
@@ -34,15 +35,13 @@ class Camera {
         lens_radius = aperture / 2;
     }
 
-    //add constructor for custom intrinsics
-
     Ray get_ray(float s, float t) const {
+
         Vector3 rd = random_from_unit_lookfrom() * lens_radius;
-        Vector3 offset = u * rd.get_x() + v *  rd.get_y();
+        Vector3 offset = u * rd.get_x() + v * rd.get_y();
         
         return Ray(origin + offset, lower_left_corner + horizontal*s + vertical*t - origin - offset); 
 }
-    //Thin lens approxiation for depth of field
 
 
     private:

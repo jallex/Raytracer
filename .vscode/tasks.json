@@ -38,8 +38,8 @@
         },
         {
             "type": "shell",
-            "label": "g++-9 build active file",
-            "command": "/usr/local/bin/g++-9",
+            "label": "g++-10 build active file",
+            "command": "/usr/local/bin/g++-10",
             "args": [
                 "-g",
                 "${file}",
@@ -49,6 +49,24 @@
             "options": {
                 "cwd": "/usr/local/bin"
             }
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: g++-10 build active file",
+            "command": "/usr/local/bin/g++-10",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
         }
     ]
 }
