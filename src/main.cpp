@@ -81,7 +81,7 @@ LoGeometry random_scene() {
 }
 
 int main() {
-    ofstream MyFile("my_image2.ppm");
+    ofstream MyFile("my_image.ppm");
     //new
     const auto aspect_ratio = 16.0 / 9.0;
     //image width

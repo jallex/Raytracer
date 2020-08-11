@@ -12,6 +12,9 @@ class Ray {
             Direction_Ray = vector2;
         }
 
+        Ray(const Vector3& origin, const Vector3& direction, float time = 0.0) 
+        : Origin_Ray(origin), Direction_Ray(direction), Time(time){}
+
         Vector3 origin() const {
             return Origin_Ray;
         }
@@ -28,6 +31,7 @@ class Ray {
 
 Vector3 Origin_Ray;
 Vector3 Direction_Ray;
+float Time;
 
 };
 
