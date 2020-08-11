@@ -14,8 +14,8 @@ class Camera {
     float focus_dist   //Thin lens approxiation for depth of field 
     ) {
         //Camera intrinsics
-        auto theta = degrees_to_radians(fov);
-        auto h = tan(theta/2.0f);
+        auto theta_fov = degrees_to_radians(fov);
+        auto h = tan(theta_fov/2);
 
         //viewport height
         auto v_height = 2.0 * h;
