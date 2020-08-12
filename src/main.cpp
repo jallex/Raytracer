@@ -81,7 +81,7 @@ LoGeometry random_scene() {
 }
 
 int main() {
-    ofstream MyFile("my_image2.ppm");
+    ofstream MyFile("my_image3.ppm");
     //new
     const auto aspect_ratio = 16.0 / 9.0;
     //image width
@@ -95,21 +95,21 @@ int main() {
      MyFile <<"P3\n" << width << " " << height << "\n255\n";
 
     //Create geometry
-    LoGeometry scene;
+    //LoGeometry scene;
 
-    scene.add(make_shared<Sphere>(
-        Vector3(0,0,-1), 0.5, make_shared<Lambertian>(Vector3(0.1, 0.2, 0.5))));
+    //scene.add(make_shared<Sphere>(
+        //Vector3(0,0,-1), 0.5, make_shared<Lambertian>(Vector3(0.1, 0.2, 0.5))));
 
-    scene.add(make_shared<Sphere>(
-        Vector3(0,-100.5,-1), 100, make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
+    //scene.add(make_shared<Sphere>(
+        //Vector3(0,-100.5,-1), 100, make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
 
-    scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, make_shared<Metal>(Vector3(.8, .6, .2), 0.0)));
-    scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, make_shared<Dielectric>(1.5)));
+    //scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, make_shared<Metal>(Vector3(.8, .6, .2), 0.0)));
+    //scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, make_shared<Dielectric>(1.5)));
     //creating a dielectric sphere with a negative radius makes surface normal point inwards,
     //creating a hollow glass sphere
     // scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
 
-    //auto scene = random_scene();
+    auto scene = random_scene();
 
 
     //Add camera to scene
