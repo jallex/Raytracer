@@ -22,27 +22,27 @@ class LoGeometry: public Geometry {
         //add object to end of this list of geometry
         void add(shared_ptr<Geometry> object) { objects.push_back(object); }
         //return if ray hit anything in this list of geometry
-        virtual bool hit(const Ray& ray, float t_min, float t_max, hit_record& rec) const;
+        virtual bool hit(const Ray& ray, float tMin, float tMax, hitRecord& rec) const;
         //std::vector automatically grows as more values are added
         std::vector<shared_ptr<Geometry>> objects;
 };
 
-bool LoGeometry::hit(const Ray& ray, float t_min, float t_max, hit_record& rec) const{
-    hit_record temp_rec;
-    bool did_hit_something = false;
+bool LoGeometry::hit(const Ray& ray, float tMin, float tMax, hitRecord& rec) const{
+    hitRecord tempRec;
+    bool didHitSomething = false;
     //t of the closest hit (keep track of lowest t value)
-    double closest_so_far = t_max;
+    double closestSoFar = tMax;
     //iterate through each object in list
     for (const auto& object : objects) {
         //if the object at list[i] was hit
-        if(object->hit(ray, t_min, closest_so_far, temp_rec)) {
-            did_hit_something = true;
-            closest_so_far = temp_rec.t;
+        if(object->hit(ray, tMin, closestSoFar, tempRec)) {
+            didHitSomething = true;
+            closestSoFar = tempRec.t;
             //record the hit record of the closest object
-            rec = temp_rec;
+            rec = tempRec;
         }
     }
-return did_hit_something;
+return didHitSomething;
 }
 
 #endif /* LOGEOMETRY_HPP_*/

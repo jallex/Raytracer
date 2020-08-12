@@ -1,7 +1,7 @@
 #ifndef CAMERA_HPP_
 #define CAMERA_HPP_
 
-#include "./rt_common.hpp"
+#include "./rtCommon.hpp"
 
 class Camera {
     public:
@@ -9,50 +9,50 @@ class Camera {
     Camera(Vector3 lookfrom, Vector3 lookat, 
     Vector3 up, //view up : use world up (0,1,0) to specify up
     float fov, //vertical field-of-view in degrees
-    float aspect_ratio,
+    float aspectRatio,
     float aperture, 
-    float focus_dist   //Thin lens approxiation for depth of field 
+    float focusDist   //Thin lens approxiation for depth of field 
     ) {
         //Camera intrinsics
-        auto theta_fov = degrees_to_radians(fov);
-        auto h = tan(theta_fov/2);
+        auto thetaFov = degreesToRadians(fov);
+        auto h = tan(thetaFov/2);
 
         //viewport height
-        auto v_height = 2.0 * h;
+        auto vHeight = 2.0 * h;
         //viewport width
-        auto v_width = aspect_ratio * v_height;
+        auto vWidth = aspectRatio * vHeight;
 
         //orthonormal basis (u, v, w) to describe camera’s orientation
-        auto w = unit_vector(lookfrom - lookat);
-        auto u = unit_vector(up.cross_product(w));
-        auto v = w.cross_product(u);
+        auto w = unitVector(lookfrom - lookat);
+        auto u = unitVector(up.crossProduct(w));
+        auto v = w.crossProduct(u);
 
         origin = lookfrom;
-        horizontal = u * v_width * focus_dist;
-        vertical = v * v_height * focus_dist;
-        lower_left_corner = origin - horizontal/2 - vertical/2 - w*focus_dist;
+        horizontal = u * vWidth * focusDist;
+        vertical = v * vHeight * focusDist;
+        lowerLeftCorner = origin - horizontal/2 - vertical/2 - w*focusDist;
     
-        lens_radius = aperture / 2;
+        lensRadius = aperture / 2;
     }
 
-    Ray get_ray(float s, float t) const {
+    Ray getRay(float s, float t) const {
 
-        Vector3 rd = random_from_unit_lookfrom() * lens_radius;
-        Vector3 offset = u * rd.get_x() + v * rd.get_y();
+        Vector3 rd = randomFromUnitLookfrom() * lensRadius;
+        Vector3 offset = u * rd.getX() + v * rd.getY();
         
-        return Ray(origin + offset, lower_left_corner + horizontal*s + vertical*t - origin - offset); 
+        return Ray(origin + offset, lowerLeftCorner + horizontal*s + vertical*t - origin - offset); 
 }
 
 
     private:
     Vector3 origin;
-    Vector3 lower_left_corner;
+    Vector3 lowerLeftCorner;
     Vector3 horizontal;
     Vector3 vertical;
     Vector3 u;
     Vector3 v;
     Vector3 w;
-    float lens_radius;
+    float lensRadius;
 };
 
 #endif /* CAMERA_HPP_*/

@@ -5,30 +5,29 @@
 class Ray {
     public:
         Ray(){}
-
-        Ray(const Vector3& vector1, const Vector3& vector2) 
-        {
-            Origin_Ray = vector1;
-            Direction_Ray = vector2;
-        }
+        Ray(const Vector3& vector1, const Vector3& vector2, float t = 0.0) 
+        : originRay(vector1), directionRay(vector2), time(t){}
 
         Vector3 origin() const {
-            return Origin_Ray;
+            return originRay;
         }
-
         Vector3 direction() const {
-            return Direction_Ray;
+            return directionRay;
+        }
+        float getTime() const {
+            return time;
         }
 
         //p(t) = A + t*B function that represents a Ray mathematically
         //Changing t gives you different points along the Ray
-        Vector3 point_at_parameter(float t) const {
-            return Origin_Ray + Direction_Ray*t;
+        Vector3 pointAtParameter(float t) const {
+            return originRay + directionRay*t;
         }
 
-Vector3 Origin_Ray;
-Vector3 Direction_Ray;
-
+    public:
+        Vector3 originRay;
+        Vector3 directionRay;
+        float time;
 };
 
 #endif /* RAY_HPP_ */
