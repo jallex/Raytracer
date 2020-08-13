@@ -26,7 +26,7 @@ class Lambertian : public Material {
         Vector3 scatterDirection = rec.p + rec.normal + randomUnitVec(); //Lambertian distribution
         //diffuse method 3
         //Vector3 scatterDirection = rec.p + randomInHemisphere(rec.normal);
-        scattered = Ray(rec.p, scatterDirection);
+        scattered = Ray(rec.p, scatterDirection, rayIn.getTime());
         //reduction or loss in the strength of the light with increasing distance from the light
         attenuation = albedo;
         return true;
@@ -44,7 +44,7 @@ class Metal : public Material {
     Vector3& attenuation, Ray& scattered) const {
         //Light reflected
         Vector3 reflected = reflect(unitVector(rayIn.direction()), rec.normal);
-        scattered = Ray(rec.p, randomInUnitSphere()*fuzz + reflected);
+        scattered = Ray(rec.p, randomInUnitSphere()*fuzz + reflected, rayIn.getTime());
         attenuation = albedo;
         return scattered.direction().dotProduct(rec.normal) > 0;
     }
@@ -84,18 +84,18 @@ class Dielectric : public Material {
         float sinTheta = sqrt(1.0-cosTheta*cosTheta);
         if(etaIOverEtaT*sinTheta > 1.0) {
             Vector3 reflected = reflect(unitDirection, rec.normal);
-            scattered = Ray(rec.p, reflected);
+            scattered = Ray(rec.p, reflected, rayIn.getTime());
             return true;
         }
         //calculate reflectivity varying with angle 
         float reflectProb = schlick(cosTheta, etaIOverEtaT);
         if(randomNum() < reflectProb) {
             Vector3 reflected = reflect(unitDirection, rec.normal);
-            scattered = Ray(rec.p, reflected);
+            scattered = Ray(rec.p, reflected, rayIn.getTime());
             return true;
         }
         Vector3 refracted = refract(unitDirection, rec.normal, etaIOverEtaT);
-        scattered = Ray(rec.p, refracted);
+        scattered = Ray(rec.p, refracted, rayIn.getTime());
         return true;
     }
 

@@ -11,7 +11,9 @@ class Camera {
     float fov, //vertical field-of-view in degrees
     float aspectRatio,
     float aperture, 
-    float focusDist   //Thin lens approxiation for depth of field 
+    float focusDist,   //Thin lens approxiation for depth of field 
+    float t0 = 0,
+    float t1 = 0
     ) {
         //Camera intrinsics
         auto thetaFov = degreesToRadians(fov);
@@ -33,6 +35,8 @@ class Camera {
         lowerLeftCorner = origin - horizontal/2 - vertical/2 - w*focusDist;
     
         lensRadius = aperture / 2;
+        time0 = t0;
+        time1 = t1;
     }
 
     Ray getRay(float s, float t) const {
@@ -40,7 +44,7 @@ class Camera {
         Vector3 rd = randomFromUnitLookfrom() * lensRadius;
         Vector3 offset = u * rd.getX() + v * rd.getY();
         
-        return Ray(origin + offset, lowerLeftCorner + horizontal*s + vertical*t - origin - offset); 
+        return Ray(origin + offset, lowerLeftCorner + horizontal*s + vertical*t - origin - offset, randomNum(time0, time1)); 
 }
 
 
@@ -53,6 +57,8 @@ class Camera {
     Vector3 v;
     Vector3 w;
     float lensRadius;
+    float time0; // camera's shutter open time
+    float time1; // shutter close time
 };
 
 #endif /* CAMERA_HPP_*/

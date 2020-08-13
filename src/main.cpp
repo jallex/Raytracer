@@ -8,6 +8,7 @@
 #include "./color.hpp"
 #include "./vec3.hpp"
 #include "./material.hpp"
+#include "./movingSphere.hpp"
 using namespace std;
 
 Vector3 color(const Ray& r, const Geometry& scene, int depth) {
@@ -52,7 +53,8 @@ LoGeometry randomScene() {
                     // diffuse
                     auto albedo = randomVec() * randomVec();
                     sphereMaterial = make_shared<Lambertian>(albedo);
-                    world.add(make_shared<Sphere>(center, 0.2, sphereMaterial));
+                    auto center2 = center + Vector3(0, randomNum(0, 0.5), 0);
+                    world.add(make_shared<MovingSphere>(center, center2, 0.0, 1.0, 0.2, sphereMaterial));
                 } else if (chooseMat < 0.95) {
                     // metal
                     auto albedo = randomVec(0.5, 1);
@@ -81,14 +83,14 @@ LoGeometry randomScene() {
 }
 
 int main() {
-    ofstream MyFile("myImage4.ppm");
+    ofstream MyFile("myImage5.ppm");
     //new
     const auto aspectRatio = 16.0 / 9.0;
     //image width
-    int width = 1200;
+    int width = 400;
     //image height
     int height = static_cast<int>(width / aspectRatio);
-    const int samplesPerPixel = 10;
+    const int samplesPerPixel = 100;
     const int maxDepth = 50;
 
     std::cout <<"P3\n" << width << " " << height << "\n255\n";
@@ -107,7 +109,7 @@ int main() {
     //scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, make_shared<Dielectric>(1.5)));
     //creating a dielectric sphere with a negative radius makes surface normal point inwards,
     //creating a hollow glass sphere
-    // scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
+     //scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
 
     auto scene = randomScene();
 
@@ -119,7 +121,7 @@ int main() {
     auto distToFocus = 10.0;
     auto aperture = 0.1;
 
-    Camera cam(lookfrom, lookat, vup, 20, aspectRatio, aperture, distToFocus);
+    Camera cam(lookfrom, lookat, vup, 20, aspectRatio, aperture, distToFocus, 0.0, 1.0);
 
 
 /**
