@@ -2,6 +2,7 @@
 #define LOGEOMETRY_HPP_
 
 #include "./geometry.hpp"
+#include "./AABB.hpp"
 
 #include <memory> //to include shared_ptr
 #include <vector> //generic array-like collection
@@ -23,6 +24,7 @@ class LoGeometry: public Geometry {
         void add(shared_ptr<Geometry> object) { objects.push_back(object); }
         //return if ray hit anything in this list of geometry
         virtual bool hit(const Ray& ray, float tMin, float tMax, hitRecord& rec) const;
+        virtual bool boundingBox(float t0, float t1, AABB& outputBox) const override;
         //std::vector automatically grows as more values are added
         std::vector<shared_ptr<Geometry>> objects;
 };
@@ -43,6 +45,23 @@ bool LoGeometry::hit(const Ray& ray, float tMin, float tMax, hitRecord& rec) con
         }
     }
 return didHitSomething;
+}
+
+bool LoGeometry::boundingBox(float t0, float t1, AABB& outputBox) const{
+    if(objects.empty()){
+        return false;
+    }
+    AABB tempBox;
+    bool box0 = true;
+
+    for(const auto& object : objects){
+        if(!object->boundingBox(t0, t1, tempBox)){
+            return false;
+        }
+        outputBox = box0 ? tempBox : surroundingBox(outputBox, tempBox);
+        box0 = false;
+    }
+    return true;
 }
 
 #endif /* LOGEOMETRY_HPP_*/

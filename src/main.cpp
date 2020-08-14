@@ -113,7 +113,6 @@ int main() {
 
     auto scene = randomScene();
 
-
     //Add camera to scene
     Vector3 lookfrom(13,2,3);
     Vector3 lookat(0,0,0);

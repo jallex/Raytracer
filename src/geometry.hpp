@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_HPP_
 #define GEOMETRY_HPP_
 #include "./ray.hpp"
+#include "./AABB.hpp"
 
 class Material; //alert compiler that pointer is to a class
 
@@ -30,6 +31,7 @@ class Geometry {
     public:
     //virtual function ensures we always override the function 
     virtual bool hit(const Ray& ray, float tMin, float tMax, hitRecord& rec) const=0;
+    virtual bool boundingBox(float t0, float t1, AABB& outputBox) const = 0;
 };
 
 

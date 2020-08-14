@@ -6,7 +6,8 @@ class Sphere: public Geometry {
     public:
     Sphere(){}
     Sphere(Vector3 c, float r, shared_ptr<Material> m) : center(c), radius(r), matPtr(m){};
-    virtual bool hit(const Ray& ray, float tmin, float tmax, hitRecord& rec) const;
+    virtual bool hit(const Ray& ray, float tmin, float tmax, hitRecord& rec) const override;
+    virtual bool boundingBox(float t0, float t1, AABB& outputBox) const override;
     Vector3 center;
     float radius;
     shared_ptr<Material> matPtr;
@@ -53,6 +54,12 @@ bool Sphere::hit(const Ray& ray, float tmin, float tmax, hitRecord& rec) const {
         }
     }
     return false;
+}
+
+bool Sphere::boundingBox(float t0, float t1, AABB& outputBox) const{
+    outputBox = AABB(center - Vector3(radius, radius, radius),
+    center + Vector3(radius, radius, radius));
+    return true;
 }
 
 

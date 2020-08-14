@@ -12,7 +12,8 @@ class MovingSphere : public Geometry {
    :center0(c0), center1(c1), time0(t0), time1(t1), radius(r), mat_ptr(m){};
  
   virtual bool hit(const Ray& r, float tmin, float tmax, hitRecord& rec) const override;
- 
+  virtual bool boundingBox(float t0, float t1, AABB& outputBox) const override;
+
   Vector3 center(float time) const;
  
    public:
@@ -29,7 +30,7 @@ Vector3 MovingSphere::center(float time) const {
 }
 
 bool MovingSphere::hit(const Ray& r, float tmin, float tmax, hitRecord& rec) const{
-// return quadratic equation dot(B, B)*t^2 + 2*dot(B, A-C)*t + dot(A-C, A-C) - Radius*Radius = 0
+    // return quadratic equation dot(B, B)*t^2 + 2*dot(B, A-C)*t + dot(A-C, A-C) - Radius*Radius = 0
     // where discriminant is b^2 - 4ac from form at^2 + bt + c = 0 
     Vector3 A = r.origin() - center(r.getTime());
     Vector3 B = r.direction();
@@ -69,6 +70,16 @@ bool MovingSphere::hit(const Ray& r, float tmin, float tmax, hitRecord& rec) con
         }
     }
     return false;
+}
+
+bool MovingSphere::boundingBox(float t0, float t1, AABB& outputBox) const{
+    AABB box0(center(t0) - Vector3(radius, radius, radius),
+        center(t0) + Vector3(radius, radius, radius));
+    AABB box1(center(t1) - Vector3(radius, radius, radius),
+        center(t1) + Vector3(radius, radius, radius));
+    outputBox = surroundingBox(box0, box1);
+
+return true;
 }
 
 #endif /* MOVINGSPHERE_HPP_ */
