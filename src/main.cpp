@@ -9,6 +9,7 @@
 #include "./vec3.hpp"
 #include "./material.hpp"
 #include "./movingSphere.hpp"
+
 using namespace std;
 
 Vector3 color(const Ray& r, const Geometry& scene, int depth) {
@@ -39,7 +40,10 @@ LoGeometry randomScene() {
     LoGeometry world;
 
     auto groundMaterial = make_shared<Lambertian>(Vector3(0.5, 0.5, 0.5));
-    world.add(make_shared<Sphere>(Vector3(0,-1000,0), 1000, groundMaterial));
+    
+    //checkered ground with constructor taking in the 2 colors 
+    auto checkeredGround = make_shared<CheckerTexture>(Vector3(0.2, 0.3, 0.1), Vector3(0.9, 0.9, 0.9));
+    world.add(make_shared<Sphere>(Vector3(0,-1000,0), 1000, make_shared<Lambertian>(checkeredGround)));
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {

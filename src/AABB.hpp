@@ -41,9 +41,9 @@ class AABB {
         if (tmax <= tmin)
             return false;
         //Y
-        auto invD = 1.0f / r.direction().getY();
-        auto t0 = (min().getY() - r.origin().getY()) * invD;
-        auto t1 = (max().getY() - r.origin().getY()) * invD;
+        invD = 1.0f / r.direction().getY();
+        t0 = (min().getY() - r.origin().getY()) * invD;
+        t1 = (max().getY() - r.origin().getY()) * invD;
         if (invD < 0.0f)
             std::swap(t0, t1);
         tmin = t0 > tmin ? t0 : tmin;
@@ -51,9 +51,9 @@ class AABB {
         if (tmax <= tmin)
             return false;
         //Z
-        auto invD = 1.0f / r.direction().getZ();
-       auto t0 = (min().getZ() - r.origin().getZ()) * invD;
-        auto t1 = (max().getZ() - r.origin().getZ()) * invD;
+        invD = 1.0f / r.direction().getZ();
+        t0 = (min().getZ() - r.origin().getZ()) * invD;
+        t1 = (max().getZ() - r.origin().getZ()) * invD;
         if (invD < 0.0f)
             std::swap(t0, t1);
         tmin = t0 > tmin ? t0 : tmin;

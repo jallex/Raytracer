@@ -13,6 +13,13 @@ class Sphere: public Geometry {
     shared_ptr<Material> matPtr;
 };
 
+void getSphereUV(const Vector3& p, float& u, float& v){
+    auto phi = atan2(p.getZ(), p.getX());
+    auto theta = asin(p.getY());
+    u = 1-(phi + pi) / (2*pi);
+    v = (theta + pi/2) / pi;
+}
+
 bool Sphere::hit(const Ray& ray, float tmin, float tmax, hitRecord& rec) const {
     // return quadratic equation dot(B, B)*t^2 + 2*dot(B, A-C)*t + dot(A-C, A-C) - Radius*Radius = 0
     // where discriminant is b^2 - 4ac from form at^2 + bt + c = 0 
@@ -64,13 +71,6 @@ bool Sphere::boundingBox(float t0, float t1, AABB& outputBox) const{
     outputBox = AABB(center - Vector3(radius, radius, radius),
     center + Vector3(radius, radius, radius));
     return true;
-}
-
-void getSphereUV(const Vector3& p, float& u, float& v){
-    auto phi = atan2(p.getZ(), p.getX());
-    auto theta = asin(p.getY());
-    u = 1-(phi + pi) / (2*pi);
-    v = (theta + pi/2) / pi;
 }
 
 
