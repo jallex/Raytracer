@@ -11,6 +11,10 @@ struct hitRecord {
     float t;
     //the point of hit
     Vector3 p;
+    //U surface coordinate of ray-object hit point
+    float u; 
+    //V surface coordinate of ray-object hit point
+    float v; 
     //normal
     Vector3 normal;
     //Materials

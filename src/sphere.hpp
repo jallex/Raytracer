@@ -36,6 +36,8 @@ bool Sphere::hit(const Ray& ray, float tmin, float tmax, hitRecord& rec) const {
             //Add surface side determination 
             rec.normal = (rec.p - center) / radius;
             rec.setFaceNormal(ray, rec.normal);
+            //record UV coordinates
+            getSphereUV((rec.p - center)/radius, rec.u, rec.v);
             //record material of this sphere
             rec.matPtr = matPtr;
             return true;
@@ -48,6 +50,8 @@ bool Sphere::hit(const Ray& ray, float tmin, float tmax, hitRecord& rec) const {
             //Add surface side determination 
             rec.normal = (rec.p - center) / radius;
             rec.setFaceNormal(ray, rec.normal);
+            //record UV coordinates
+            getSphereUV((rec.p - center)/radius, rec.u, rec.v);
             //record material of this sphere
             rec.matPtr = matPtr;
             return true;
@@ -60,6 +64,13 @@ bool Sphere::boundingBox(float t0, float t1, AABB& outputBox) const{
     outputBox = AABB(center - Vector3(radius, radius, radius),
     center + Vector3(radius, radius, radius));
     return true;
+}
+
+void getSphereUV(const Vector3& p, float& u, float& v){
+    auto phi = atan2(p.getZ(), p.getX());
+    auto theta = asin(p.getY());
+    u = 1-(phi + pi) / (2*pi);
+    v = (theta + pi/2) / pi;
 }
 
 

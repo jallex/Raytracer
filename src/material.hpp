@@ -3,6 +3,7 @@
 
 
 #include "./geometry.hpp"
+#include "./texture.hpp"
 
 
 class Material {
@@ -14,7 +15,8 @@ class Material {
 //Diffuse
 class Lambertian : public Material {
     public:
-    Lambertian(const Vector3& a) : albedo(a) {}
+    Lambertian(const Vector3& a) : albedo(make_shared<SolidColor>(a)) {}
+    Lambertian(shared_ptr<Texture> a) : albedo(a) {}
 
     virtual bool scatter(const Ray& rayIn, const hitRecord& rec, 
     Vector3& attenuation, Ray& scattered) const {
@@ -28,11 +30,13 @@ class Lambertian : public Material {
         //Vector3 scatterDirection = rec.p + randomInHemisphere(rec.normal);
         scattered = Ray(rec.p, scatterDirection, rayIn.getTime());
         //reduction or loss in the strength of the light with increasing distance from the light
-        attenuation = albedo;
+        attenuation = albedo->value(rec.u, rec.v, rec.p);
         return true;
     }
+    
+    public:
     //the measure of the diffuse reflection of light 
-    Vector3 albedo;
+    shared_ptr<Texture> albedo;
 };
 
 
