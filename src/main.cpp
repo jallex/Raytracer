@@ -12,6 +12,7 @@
 
 using namespace std;
 
+//calculate color at the set max depth
 Vector3 color(const Ray& r, const Geometry& scene, int depth) {
     hitRecord rec;
     if(depth <= 0) { 
@@ -36,6 +37,8 @@ Vector3 color(const Ray& r, const Geometry& scene, int depth) {
     }
 }
 
+
+//A random scene of spheres with different materials 
 LoGeometry randomScene() {
     LoGeometry world;
 
@@ -86,7 +89,19 @@ LoGeometry randomScene() {
     return world;
 }
 
+//A scene with 2 checkered Spheres
+LoGeometry checkeredSpheres(){
+    LoGeometry objects;
+
+    auto checkerTexture = make_shared<CheckerTexture>(Vector3(0.2, 0.3, 0.1), Vector3(0.9, 0.9, 0.9));
+    objects.add(make_shared<Sphere>(Vector3(0, -10, 0), 10, make_shared<Lambertian>(checkerTexture)));
+    objects.add(make_shared<Sphere>(Vector3(0, 10, 0), 10, make_shared<Lambertian>(checkerTexture)));
+    return objects;
+}
+
+//main!
 int main() {
+    int sceneNumber = 2;
     ofstream MyFile("myImage5.ppm");
     //new
     const auto aspectRatio = 16.0 / 9.0;
@@ -101,41 +116,35 @@ int main() {
      MyFile <<"P3\n" << width << " " << height << "\n255\n";
 
     //Create geometry
-    //LoGeometry scene;
+    LoGeometry scene;
+    Vector3 lookfrom(13,2,3);
+    Vector3 lookat(0,0,0);
+    float vfov = 40.0;
+    auto aperture = 0.0;
 
-    //scene.add(make_shared<Sphere>(
-        //Vector3(0,0,-1), 0.5, make_shared<Lambertian>(Vector3(0.1, 0.2, 0.5))));
+    //switch case to determine what scene to render
+    switch(sceneNumber){
+        case 1:
+            scene = randomScene();
+            lookfrom = Vector3(13, 2, 3);
+            lookat = Vector3(0, 0, 0);
+            vfov = 20.0;
+            aperture = 0.1;
+            break;
+        case 2: 
+            scene = checkeredSpheres();
+            lookfrom = Vector3(13, 2, 3);
+            lookat = Vector3(0, 0, 0);
+            vfov = 20.0;
+            break;
+    }
 
-    //scene.add(make_shared<Sphere>(
-        //Vector3(0,-100.5,-1), 100, make_shared<Lambertian>(Vector3(0.8, 0.8, 0.0))));
-
-    //scene.add(make_shared<Sphere>(Vector3(1,0,-1), 0.5, make_shared<Metal>(Vector3(.8, .6, .2), 0.0)));
-    //scene.add(make_shared<Sphere>(Vector3(-1,0,-1), 0.5, make_shared<Dielectric>(1.5)));
-    //creating a dielectric sphere with a negative radius makes surface normal point inwards,
-    //creating a hollow glass sphere
-     //scene.add(make_shared<Sphere>(Vector3(-1,0,-1), -0.45, make_shared<Dielectric>(1.5)));
-
-    auto scene = randomScene();
 
     //Add camera to scene
-    Vector3 lookfrom(13,2,3);
-    Vector3 lookat(0,0,0);
     Vector3 vup(0,1,0);
     auto distToFocus = 10.0;
-    auto aperture = 0.1;
 
-    Camera cam(lookfrom, lookat, vup, 20, aspectRatio, aperture, distToFocus, 0.0, 1.0);
-
-
-/**
-    Vector3 lookfrom(13,2,3);
-    Vector3 lookat(0,0,0);
-    Vector3 vup(0,1,0);
-    auto dist_to_focus = 10.0;
-    auto aperture = 0.1;
-
-    Camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
-**/
+    Camera cam(lookfrom, lookat, vup, vfov, aspectRatio, aperture, distToFocus, 0.0, 1.0);
 
     for (int j = height - 1; j >= 0; j--){
          std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
