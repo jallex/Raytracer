@@ -102,7 +102,7 @@ LoGeometry checkeredSpheres(){
 //A scene with two spheres
 LoGeometry perlinSpheres(){
     LoGeometry objects;
-    auto perlinTexture = make_shared<noiseTexture>();
+    auto perlinTexture = make_shared<noiseTexture>(4);
 
     objects.add(make_shared<Sphere>(Vector3(0, -1000, 0), 1000, make_shared<Lambertian>(perlinTexture)));
     objects.add(make_shared<Sphere>(Vector3(0, 2, 0), 2, make_shared<Lambertian>(perlinTexture)));

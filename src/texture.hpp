@@ -53,13 +53,16 @@ class CheckerTexture : public Texture {
     class noiseTexture : public Texture {
         public: 
         noiseTexture(){}
+        noiseTexture(float s) : scale(s){}
 
         virtual Vector3 value(float u, float v, const Vector3& p) const override {
-            return Vector3(1, 1, 1) * noise.noise(p);
+            //ensure perlin output value is between 0 and 1 (not negative)
+            return Vector3(1, 1, 1) * 0.5 * (1 + sin(scale*p.getZ() + 10*noise.turbulence(p)));
         }
 
         public:
          PerlinNoise noise;
+         float scale;
     };
 
 #endif /* TEXTURE_HPP_*/
