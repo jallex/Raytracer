@@ -1,6 +1,7 @@
 #ifndef TEXTURE_HPP_
 #define TEXTURE_HPP_
 #include "./rtCommon.hpp"
+#include "./perlinNoise.hpp"
 
 class Texture {
     public:
@@ -46,6 +47,19 @@ class CheckerTexture : public Texture {
     public:
     shared_ptr<Texture> odd;
     shared_ptr<Texture> even;
+    };
+
+
+    class noiseTexture : public Texture {
+        public: 
+        noiseTexture(){}
+
+        virtual Vector3 value(float u, float v, const Vector3& p) const override {
+            return Vector3(1, 1, 1) * noise.noise(p);
+        }
+
+        public:
+         PerlinNoise noise;
     };
 
 #endif /* TEXTURE_HPP_*/

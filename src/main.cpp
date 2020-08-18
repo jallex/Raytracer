@@ -99,9 +99,19 @@ LoGeometry checkeredSpheres(){
     return objects;
 }
 
+//A scene with two spheres
+LoGeometry perlinSpheres(){
+    LoGeometry objects;
+    auto perlinTexture = make_shared<noiseTexture>();
+
+    objects.add(make_shared<Sphere>(Vector3(0, -1000, 0), 1000, make_shared<Lambertian>(perlinTexture)));
+    objects.add(make_shared<Sphere>(Vector3(0, 2, 0), 2, make_shared<Lambertian>(perlinTexture)));
+    return objects;
+}
+
 //main!
 int main() {
-    int sceneNumber = 2;
+    int sceneNumber = 3;
     ofstream MyFile("myImage5.ppm");
     //new
     const auto aspectRatio = 16.0 / 9.0;
@@ -133,6 +143,12 @@ int main() {
             break;
         case 2: 
             scene = checkeredSpheres();
+            lookfrom = Vector3(13, 2, 3);
+            lookat = Vector3(0, 0, 0);
+            vfov = 20.0;
+            break;
+        case 3:
+            scene = perlinSpheres();
             lookfrom = Vector3(13, 2, 3);
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
