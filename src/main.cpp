@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>      // std::stringstream
 #include "./rtCommon.hpp"
 #include "./sphere.hpp"
 #include "./geometry.hpp"
@@ -9,6 +10,12 @@
 #include "./vec3.hpp"
 #include "./material.hpp"
 #include "./movingSphere.hpp"
+#include "./imageTexture.hpp"
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string>
+#include <fstream>
+
 
 using namespace std;
 
@@ -109,9 +116,24 @@ LoGeometry perlinSpheres(){
     return objects;
 }
 
+//debugging file existence
+inline bool exists_test3 (const std::string& name) {
+  struct stat buffer;   
+  return (stat (name.c_str(), &buffer) == 0); 
+}
+
+//A scene with projected image textures
+LoGeometry planetsTextures(){
+    auto jupiterTexture = make_shared<ImageTexture>("src/imageTextures/jupiter.jpg");
+    auto jupiterSurface = make_shared<Lambertian>(jupiterTexture);
+    auto sphere = make_shared<Sphere>(Vector3(0, 0, 0), 2, jupiterSurface);
+
+    return LoGeometry(sphere);
+}
+
 //main!
 int main() {
-    int sceneNumber = 3;
+    int sceneNumber = 4;
     ofstream MyFile("myImage5.ppm");
     //new
     const auto aspectRatio = 16.0 / 9.0;
@@ -153,6 +175,13 @@ int main() {
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
             break;
+        case 4: 
+            scene = planetsTextures();
+            lookfrom = Vector3(13, 2, 3);
+            lookat = Vector3(0, 0, 0);
+            vfov = 20.0;
+            break;
+        
     }
 
 
