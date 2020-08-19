@@ -10,6 +10,11 @@ class Material {
     public:
     virtual bool scatter(const Ray& rayIn, const hitRecord& rec, 
     Vector3& attebnuation, Ray& scattered) const=0;
+    //emissive material
+    virtual Vector3 emitted(float u, float v, const Vector3& p) const {
+            //return white
+            return Vector3(0,0,0);
+        }
 };
 
 //Diffuse
@@ -105,6 +110,25 @@ class Dielectric : public Material {
 
     //dimensionless number that describes how fast light travels through the material
     float indexOfRefraction;
+};
+
+class DiffuseLight : public Material {
+    public: 
+        DiffuseLight(shared_ptr<Texture> a) : emit(a){}
+        DiffuseLight(Vector3 color) : emit(make_shared<SolidColor>(color)){}
+
+       virtual bool scatter(const Ray& rayIn, const hitRecord& rec, 
+    Vector3& attenuation, Ray& scattered) const override {
+        return false; // nothing scattered
+    }
+
+    //return the color that gets emitted from the light
+    virtual Vector3 emitted(float u, float v, const Vector3& p) const override {
+        return emit->value(u, v, p);
+    }
+
+    public:
+    shared_ptr<Texture> emit;
 };
 
 #endif /* MATERIAL_HPP_*/

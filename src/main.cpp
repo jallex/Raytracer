@@ -20,28 +20,26 @@
 using namespace std;
 
 //calculate color at the set max depth
-Vector3 color(const Ray& r, const Geometry& scene, int depth) {
+Vector3 color(const Ray& r, const Vector3 backgroundColor, const Geometry& scene, int depth) {
     hitRecord rec;
     if(depth <= 0) { 
         //no light
         return Vector3(0, 0, 0);
     }
-    if(scene.hit(r, 0.001, infinity, rec)) {
+    if(!scene.hit(r, 0.001, infinity, rec)) {
+        //ray didn't hit any object, return background color
+        return backgroundColor;
+    }
         Ray scattered;
         Vector3 attenuation;
-        if (rec.matPtr->scatter(r, rec, attenuation, scattered)){
-            return attenuation * color(scattered, scene, depth-1);
+        Vector3 emitted = rec.matPtr->emitted(rec.u, rec.v, rec.p);
+
+        //just light, not scattered on any object
+        if (!rec.matPtr->scatter(r, rec, attenuation, scattered)){
+            return emitted;
         }
-        return Vector3(0, 0, 0); //no light
-    }
-    else {
-        //calculate background color 
-        Vector3 unitDirection = unitVector(r.direction());
-        auto t = 0.5*(unitDirection.getY() + 1.0);
-        //When t=1.0 return blue. When t=0.0 return white depending on ray Y coordinate
-        //linear interpolation form: blended_value = (1-t)*start_value + t*end_value where 0 <= t <= 1
-        return Vector3(1.0, 1.0, 1.0)*(1.0 - t) + Vector3(0.5, 0.7, 1.0)*t;
-    }
+    //object under light recursively find color
+    return emitted + attenuation * color(scattered, backgroundColor, scene, depth-1);
 }
 
 
@@ -134,6 +132,8 @@ LoGeometry planetsTextures(){
 //main!
 int main() {
     int sceneNumber = 4;
+    //black background
+    Vector3 backgroundColor(0,0,0);
     ofstream MyFile("myImage5.ppm");
     //new
     const auto aspectRatio = 16.0 / 9.0;
@@ -158,6 +158,7 @@ int main() {
     switch(sceneNumber){
         case 1:
             scene = randomScene();
+            backgroundColor = Vector3(0.70, 0.80, 1.00);
             lookfrom = Vector3(13, 2, 3);
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
@@ -165,12 +166,14 @@ int main() {
             break;
         case 2: 
             scene = checkeredSpheres();
+            backgroundColor = Vector3(0.70, 0.80, 1.00);
             lookfrom = Vector3(13, 2, 3);
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
             break;
         case 3:
             scene = perlinSpheres();
+            backgroundColor = Vector3(0.70, 0.80, 1.00);
             lookfrom = Vector3(13, 2, 3);
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
@@ -201,7 +204,7 @@ int main() {
                 auto u = (i + randomNum()) / (width - 1);
                 auto v = (j + randomNum()) / (height - 1);
                 Ray r = cam.getRay(u, v);
-                col += color(r, scene, maxDepth);
+                col += color(r, backgroundColor, scene, maxDepth);
             }
             //print colors and write to ppm file
             writeColor(std::cout, MyFile, col, samplesPerPixel);
