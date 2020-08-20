@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>      // std::stringstream
 #include "./rtCommon.hpp"
 #include "./sphere.hpp"
 #include "./geometry.hpp"
@@ -11,10 +10,10 @@
 #include "./material.hpp"
 #include "./movingSphere.hpp"
 #include "./imageTexture.hpp"
+#include "./XYRect.hpp"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
-#include <fstream>
 
 
 using namespace std;
@@ -129,9 +128,22 @@ LoGeometry planetsTextures(){
     return LoGeometry(sphere);
 }
 
+//A scene with a rectangle acting as a light
+LoGeometry rectLight(){
+    LoGeometry objects;
+    auto perlinTexture = make_shared<noiseTexture>(4);
+    objects.add(make_shared<Sphere>(Vector3(0,-1000,0), 1000, make_shared<Lambertian>(perlinTexture)));
+    objects.add(make_shared<Sphere>(Vector3(0,2,0), 2, make_shared<Lambertian>(perlinTexture)));
+
+    auto difflight = make_shared<DiffuseLight>(Vector3(4,4,4));
+    objects.add(make_shared<XYRect>(3, 5, 1, 3, -2, difflight));
+
+    return objects;
+}
+
 //main!
 int main() {
-    int sceneNumber = 4;
+    int sceneNumber = 5;
     //black background
     Vector3 backgroundColor(0,0,0);
     ofstream MyFile("myImage5.ppm");
@@ -141,7 +153,7 @@ int main() {
     int width = 400;
     //image height
     int height = static_cast<int>(width / aspectRatio);
-    const int samplesPerPixel = 100;
+    int samplesPerPixel = 100;
     const int maxDepth = 50;
 
     std::cout <<"P3\n" << width << " " << height << "\n255\n";
@@ -184,7 +196,14 @@ int main() {
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
             break;
-        
+        case 5:
+            scene = rectLight();
+            samplesPerPixel = 400;
+            backgroundColor = Vector3(0,0,0);
+            lookfrom = Vector3(26, 3, 6);
+            lookat = Vector3(0,2,0);
+            vfov = 20.0;
+            break;
     }
 
 
