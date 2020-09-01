@@ -22,7 +22,7 @@ using namespace std;
 Vector3 color(const Ray& r, const Vector3 backgroundColor, const Geometry& scene, int depth) {
     hitRecord rec;
     if(depth <= 0) { 
-        //no light
+        //no lightßS
         return Vector3(0, 0, 0);
     }
     if(!scene.hit(r, 0.01, infinity, rec)) {
@@ -119,7 +119,6 @@ inline bool exists_test3 (const std::string& name) {
   return (stat (name.c_str(), &buffer) == 0); 
 }
 
-/**
 //A scene with projected image textures
 LoGeometry planetsTextures(){
     auto jupiterTexture = make_shared<ImageTexture>("src/imageTextures/jupiter.jpg");
@@ -128,7 +127,7 @@ LoGeometry planetsTextures(){
 
     return LoGeometry(sphere);
 }
-**/
+
 //A scene with a rectangle acting as a light
 LoGeometry rectLight(){
     LoGeometry objects;
@@ -162,21 +161,16 @@ LoGeometry cornellBox() {
 
 //main!
 int main() {
-    int sceneNumber = 5;
+    int sceneNumber = 6;
     //black background
     Vector3 backgroundColor(0,0,0);
-    ofstream MyFile("myImage5.ppm");
+    ofstream MyFile("myImage6.ppm");
     //new
     auto aspectRatio = 16.0 / 9.0;
     //image width
     int width = 400;
-    //image height
-    int height = static_cast<int>(width / aspectRatio);
     int samplesPerPixel = 100;
     const int maxDepth = 50;
-
-    std::cout <<"P3\n" << width << " " << height << "\n255\n";
-     MyFile <<"P3\n" << width << " " << height << "\n255\n";
 
     //Create geometry
     LoGeometry scene;
@@ -209,7 +203,6 @@ int main() {
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
             break;
-        /**
         case 4: 
             scene = planetsTextures();
             lookfrom = Vector3(13, 2, 3);
@@ -217,7 +210,6 @@ int main() {
             vfov = 20.0;
             backgroundColor = Vector3(0.70, 0.80, 1.00);
             break;
-        **/
         case 5:
             scene = rectLight();
             samplesPerPixel = 800;
@@ -230,8 +222,8 @@ int main() {
             scene = cornellBox();
             aspectRatio = 1.0;
             width = 600;
-            samplesPerPixel = 800;
-            backgroundColor = Vector3(0,1,1);
+            samplesPerPixel = 200;
+            backgroundColor = Vector3(0, 0, 0);
             lookfrom = Vector3(278, 278, -800);
             lookat = Vector3(278, 278, 0);
             vfov = 40.0;
@@ -242,11 +234,17 @@ int main() {
     //Add camera to scene
     Vector3 vup(0,1,0);
     auto distToFocus = 10.0;
+    //image height
+    const int height = static_cast<int>(width / aspectRatio);
+
+    std::cout <<"P3\n" << width << " " << height << "\n255\n";
+     MyFile <<"P3\n" << width << " " << height << "\n255\n";
+
 
     Camera cam(lookfrom, lookat, vup, vfov, aspectRatio, aperture, distToFocus, 0.0, 1.0);
 
     for (int j = height - 1; j >= 0; j--){
-         std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+         std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush; 
         for(int i = 0; i < width; i++){
             //color of this pixel
             Vector3 col(0,0,0);
