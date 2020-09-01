@@ -31,38 +31,34 @@ class AABB {
         //X
         //𝑡𝑥0=min((𝑥0−𝐴𝑥)/𝑏𝑥,(𝑥1−𝐴𝑥)/𝑏𝑥)
         //𝑡𝑥1=max((𝑥0−𝐴𝑥)/𝑏𝑥,(𝑥1−𝐴𝑥)/𝑏𝑥)
-       auto invD = 1.0f / r.direction().getX();
-       auto t0 = (min().getX() - r.origin().getX()) * invD;
-        auto t1 = (max().getX() - r.origin().getX()) * invD;
-        if (invD < 0.0f)
-            std::swap(t0, t1);
-        tmin = t0 > tmin ? t0 : tmin;
-        tmax = t1 < tmax ? t1 : tmax;
+        auto t0 = fmin((_min.getX() - r.origin().getX()) / r.direction().getX(),
+                               (_max.getX() - r.origin().getX()) / r.direction().getX());
+        auto t1 = fmax((_min.getX() - r.origin().getX()) / r.direction().getX(),
+                               (_max.getX() - r.origin().getX()) / r.direction().getX());
+        tmin = fmax(t0, tmin);
+        tmax = fmin(t1, tmax);
         if (tmax <= tmin)
             return false;
         //Y
-        invD = 1.0f / r.direction().getY();
-        t0 = (min().getY() - r.origin().getY()) * invD;
-        t1 = (max().getY() - r.origin().getY()) * invD;
-        if (invD < 0.0f)
-            std::swap(t0, t1);
-        tmin = t0 > tmin ? t0 : tmin;
-        tmax = t1 < tmax ? t1 : tmax;
+        t0 = fmin((_min.getY() - r.origin().getY()) / r.direction().getY(),
+                               (_max.getY() - r.origin().getY()) / r.direction().getY());
+        t1 = fmax((_min.getX() - r.origin().getY()) / r.direction().getY(),
+                               (_max.getY() - r.origin().getY()) / r.direction().getY());
+        tmin = fmax(t0, tmin);
+        tmax = fmin(t1, tmax);
         if (tmax <= tmin)
             return false;
         //Z
-        invD = 1.0f / r.direction().getZ();
-        t0 = (min().getZ() - r.origin().getZ()) * invD;
-        t1 = (max().getZ() - r.origin().getZ()) * invD;
-        if (invD < 0.0f)
-            std::swap(t0, t1);
-        tmin = t0 > tmin ? t0 : tmin;
-        tmax = t1 < tmax ? t1 : tmax;
+        t0 = fmin((_min.getZ() - r.origin().getZ()) / r.direction().getZ(),
+                               (_max.getZ() - r.origin().getZ()) / r.direction().getZ());
+        t1 = fmax((_min.getX() - r.origin().getZ()) / r.direction().getZ(),
+                               (_max.getZ() - r.origin().getZ()) / r.direction().getZ());
+        tmin = fmax(t0, tmin);
+        tmax = fmin(t1, tmax);
         if (tmax <= tmin)
             return false;
 
         return true;
-
     }
 
     //local variables members of this class

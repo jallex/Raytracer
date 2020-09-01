@@ -9,7 +9,7 @@
 class Material {
     public:
     virtual bool scatter(const Ray& rayIn, const hitRecord& rec, 
-    Vector3& attebnuation, Ray& scattered) const=0;
+    Vector3& attenuation, Ray& scattered) const=0;
     //emissive material
     virtual Vector3 emitted(float u, float v, const Vector3& p) const {
             //return white
@@ -24,13 +24,13 @@ class Lambertian : public Material {
     Lambertian(shared_ptr<Texture> a) : albedo(a) {}
 
     virtual bool scatter(const Ray& rayIn, const hitRecord& rec, 
-    Vector3& attenuation, Ray& scattered) const {
+    Vector3& attenuation, Ray& scattered) const override {
         //Light scatter
         //calculate object color
         //diffuse method 1
         // Vector3 scatterDirection = rec.p + rec.normal + randomInUnitSphere();
         //diffuse method 2
-        Vector3 scatterDirection = rec.p + rec.normal + randomUnitVec(); //Lambertian distribution
+        Vector3 scatterDirection = rec.normal + randomUnitVec(); //Lambertian distribution
         //diffuse method 3
         //Vector3 scatterDirection = rec.p + randomInHemisphere(rec.normal);
         scattered = Ray(rec.p, scatterDirection, rayIn.getTime());
@@ -113,22 +113,22 @@ class Dielectric : public Material {
 };
 
 class DiffuseLight : public Material {
-    public: 
-        DiffuseLight(shared_ptr<Texture> a) : emit(a){}
-        DiffuseLight(Vector3 color) : emit(make_shared<SolidColor>(color)){}
+    public:
+        DiffuseLight(shared_ptr<Texture> a) : emit(a) {}
+        DiffuseLight(Vector3 c) : emit(make_shared<SolidColor>(c)) {}
 
-       virtual bool scatter(const Ray& rayIn, const hitRecord& rec, 
-    Vector3& attenuation, Ray& scattered) const override {
-        return false; // nothing scattered
-    }
+        virtual bool scatter(
+            const Ray& r_in, const hitRecord& rec, Vector3& attenuation, Ray& scattered
+        ) const override {
+            return false;
+        }
 
-    //return the color that gets emitted from the light
-    virtual Vector3 emitted(float u, float v, const Vector3& p) const override {
-        return emit->value(u, v, p);
-    }
+        virtual Vector3 emitted(float u, float v, const Vector3& p) const override {
+            return emit->value(u, v, p);
+        }
 
     public:
-    shared_ptr<Texture> emit;
+        shared_ptr<Texture> emit;
 };
 
 #endif /* MATERIAL_HPP_*/

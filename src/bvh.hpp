@@ -3,7 +3,6 @@
 
 #include <algorithm>
 
-#include "./geometry.hpp"
 #include "./rtCommon.hpp"
 #include "./logeometry.hpp"
 

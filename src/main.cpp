@@ -25,7 +25,7 @@ Vector3 color(const Ray& r, const Vector3 backgroundColor, const Geometry& scene
         //no light
         return Vector3(0, 0, 0);
     }
-    if(!scene.hit(r, 0.001, infinity, rec)) {
+    if(!scene.hit(r, 0.01, infinity, rec)) {
         //ray didn't hit any object, return background color
         return backgroundColor;
     }
@@ -119,6 +119,7 @@ inline bool exists_test3 (const std::string& name) {
   return (stat (name.c_str(), &buffer) == 0); 
 }
 
+/**
 //A scene with projected image textures
 LoGeometry planetsTextures(){
     auto jupiterTexture = make_shared<ImageTexture>("src/imageTextures/jupiter.jpg");
@@ -127,7 +128,7 @@ LoGeometry planetsTextures(){
 
     return LoGeometry(sphere);
 }
-
+**/
 //A scene with a rectangle acting as a light
 LoGeometry rectLight(){
     LoGeometry objects;
@@ -141,6 +142,24 @@ LoGeometry rectLight(){
     return objects;
 }
 
+LoGeometry cornellBox() {
+    LoGeometry objects;
+
+    auto red   = make_shared<Lambertian>(Vector3(.65, .05, .05));
+    auto white = make_shared<Lambertian>(Vector3(.73, .73, .73));
+    auto green = make_shared<Lambertian>(Vector3(.12, .45, .15));
+    auto light = make_shared<DiffuseLight>(Vector3(15, 15, 15));
+
+    objects.add(make_shared<ZYRect>(0, 555, 0, 555, 555, green));
+    objects.add(make_shared<ZYRect>(0, 555, 0, 555, 0, red));
+    objects.add(make_shared<XZRect>(213, 343, 227, 332, 554, light));
+    objects.add(make_shared<XZRect>(0, 555, 0, 555, 0, white));
+    objects.add(make_shared<XZRect>(0, 555, 0, 555, 555, white));
+    objects.add(make_shared<XYRect>(0, 555, 0, 555, 555, white));
+
+    return objects;
+}
+
 //main!
 int main() {
     int sceneNumber = 5;
@@ -148,7 +167,7 @@ int main() {
     Vector3 backgroundColor(0,0,0);
     ofstream MyFile("myImage5.ppm");
     //new
-    const auto aspectRatio = 16.0 / 9.0;
+    auto aspectRatio = 16.0 / 9.0;
     //image width
     int width = 400;
     //image height
@@ -190,19 +209,32 @@ int main() {
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
             break;
+        /**
         case 4: 
             scene = planetsTextures();
             lookfrom = Vector3(13, 2, 3);
             lookat = Vector3(0, 0, 0);
             vfov = 20.0;
+            backgroundColor = Vector3(0.70, 0.80, 1.00);
             break;
+        **/
         case 5:
             scene = rectLight();
-            samplesPerPixel = 400;
-            backgroundColor = Vector3(0,0,0);
+            samplesPerPixel = 800;
+            backgroundColor = Vector3(0, 0, 0);
             lookfrom = Vector3(26, 3, 6);
             lookat = Vector3(0,2,0);
             vfov = 20.0;
+            break;
+        case 6:
+            scene = cornellBox();
+            aspectRatio = 1.0;
+            width = 600;
+            samplesPerPixel = 800;
+            backgroundColor = Vector3(0,1,1);
+            lookfrom = Vector3(278, 278, -800);
+            lookat = Vector3(278, 278, 0);
+            vfov = 40.0;
             break;
     }
 
